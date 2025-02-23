@@ -11,12 +11,12 @@ namespace mapThis
             var labelValuePairs = LabelValuePairTestData.GetTestData();
             var categoryValuesJson = JsonConvert.SerializeObject(labelValuePairs);
 
-            return new List<SourceClass>
-            {
-                new SourceClass { Id = 1, Name = "Source1", CategoryValues = categoryValuesJson },
-                new SourceClass { Id = 2, Name = "Source2", CategoryValues = categoryValuesJson },
-                new SourceClass { Id = 3, Name = "Source3", CategoryValues = categoryValuesJson }
-            };
+            return
+            [
+                new() { Id = 1, Name = "Source1", CategoryValues = categoryValuesJson },
+                new() { Id = 2, Name = "Source2", CategoryValues = categoryValuesJson },
+                new() { Id = 3, Name = "Source3", CategoryValues = categoryValuesJson }
+            ];
         }
     }
 }

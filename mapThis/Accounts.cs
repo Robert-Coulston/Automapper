@@ -1,26 +1,26 @@
-// filepath: /D:/Data/Code/mapThis/DestinationClass.cs
+// filepath: /D:/Data/Code/mapThis/Account.cs
 namespace mapThis;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class DestinationClass
+public class Account
 {
     [Key]
     public int Id { get; set; }
     public required string FullName { get; set; }
     public string[]? CategoryValues { get; set; }
-    public List<DestinationValueClass>? DestinationValueClasses { get; set; }
+    public List<AccountValue>? AccountValues { get; set; }
 }
 
-public class DestinationValueClass
+public class AccountValue
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey("DestinationClass")]
-    public int DestinationClassId { get; set; }
+    [ForeignKey("Account")]
+    public int AccountId { get; set; }
     public required string CategoryValue { get; set; }
-    public required DestinationClass DestinationClass { get; set; }
+    public required Account Account { get; set; }
 }
 
 

@@ -6,17 +6,17 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<string, DestinationValueClass>()
+        CreateMap<string, AccountValue>()
             .ForMember(dest => dest.CategoryValue, opt => opt.MapFrom(src => src));
 
-        CreateMap<SourceClass, DestinationClass>()
+        CreateMap<SourceClass, Account>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.CategoryValues, opt => opt.MapFrom(src => src.GetCategoryValuesArray()))
             .AfterMap((src, dest) =>
             {
                 dest.CategoryValues = src.GetCategoryValuesArray();
-                dest.DestinationValueClasses = src.GetCategoryValuesArray()
-                    .Select(value => new DestinationValueClass { CategoryValue = value, DestinationClassId = dest.Id, DestinationClass = dest })
+                dest.AccountValues = src.GetCategoryValuesArray()
+                    .Select(value => new AccountValue { CategoryValue = value, AccountId = dest.Id, Account = dest })
                     .ToList();
             });
     }

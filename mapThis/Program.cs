@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 
@@ -10,15 +11,13 @@ namespace mapThis
     {
         static void Main(string[] args)
         {
-            var serviceProvider = new ServiceCollection()
-                .AddDbContext<DestinationContext>(options =>
-                    options.UseSqlite("Data Source=destination.db"))
-                .AddAutoMapper(typeof(MappingProfile))
-                .BuildServiceProvider();
+            var host = CreateHostBuilder(args).Build();
 
-            var mapper = serviceProvider.GetRequiredService<IMapper>();
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
 
-            using var context = serviceProvider.GetRequiredService<DestinationContext>();
+            var context = services.GetRequiredService<DestinationContext>();
+            var mapper = services.GetRequiredService<IMapper>();
 
             // create and seed the database
             // context.Database.EnsureDeleted();
@@ -26,8 +25,8 @@ namespace mapThis
             DestinationContext.SeedDatabase(context, mapper);
 
             // query the database after seeding
-            var destinationData = context.DestinationClasses
-                .Include(d => d.DestinationValueClasses)
+            var destinationData = context.Accounts
+                .Include(d => d.AccountValues)
                 .ToList();
 
             Console.WriteLine("\nDestination Data:");
@@ -40,12 +39,20 @@ namespace mapThis
                     Console.WriteLine($"  {categoryValue}");
                 }
 
-                Console.WriteLine("DestinationValueClasses:");
-                foreach (var destinationValueClass in destination.DestinationValueClasses ?? new List<DestinationValueClass>())
+                Console.WriteLine("AccountValues:");
+                foreach (var AccountValue in destination.AccountValues ?? new List<AccountValue>())
                 {
-                    Console.WriteLine($"  Id: {destinationValueClass.Id}, CategoryValue: {destinationValueClass.CategoryValue}, DestinationClassId: {destinationValueClass.DestinationClassId}");
+                    Console.WriteLine($"  Id: {AccountValue.Id}, CategoryValue: {AccountValue.CategoryValue}, AccountId: {AccountValue.AccountId}");
                 }
             }
         }
+
+        static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureServices((_, services) =>
+                    services
+                        .AddDbContext<DestinationContext>(options =>
+                            options.UseSqlite("Data Source=destination.db"))
+                        .AddAutoMapper(typeof(MappingProfile)));
     }
 }
