@@ -16,7 +16,7 @@ public class MappingProfile : Profile
             {
                 dest.CategoryValues = src.GetCategoryValuesArray();
                 dest.DestinationValueClasses = src.GetCategoryValuesArray()
-                    .Select(value => new DestinationValueClass { CategoryValue = value, DestinationClassId = dest.Id })
+                    .Select(value => new DestinationValueClass { CategoryValue = value, DestinationClassId = dest.Id, DestinationClass = dest })
                     .ToList();
             });
     }

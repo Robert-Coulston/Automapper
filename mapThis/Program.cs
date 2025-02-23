@@ -1,5 +1,8 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 
 namespace mapThis
 {
@@ -7,22 +10,25 @@ namespace mapThis
     {
         static void Main(string[] args)
         {
+            var serviceProvider = new ServiceCollection()
+                .AddDbContext<DestinationContext>(options =>
+                    options.UseSqlite("Data Source=destination.db"))
+                .AddAutoMapper(typeof(MappingProfile))
+                .BuildServiceProvider();
 
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
+            var mapper = serviceProvider.GetRequiredService<IMapper>();
 
-            var mapper = new Mapper(config);
+            using var context = serviceProvider.GetRequiredService<DestinationContext>();
 
-            var sourceData = SourceClassTestData.GetTestData();
-            var destinationData = mapper.Map<List<DestinationClass>>(sourceData);
+            // create and seed the database
+            // context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            DestinationContext.SeedDatabase(context, mapper);
 
-            Console.WriteLine("Source Data:");
-            foreach (var source in sourceData)
-            {
-                Console.WriteLine($"Id: {source.Id}, Name: {source.Name}, CategoryValues: {source.CategoryValues}");
-            }
+            // query the database after seeding
+            var destinationData = context.DestinationClasses
+                .Include(d => d.DestinationValueClasses)
+                .ToList();
 
             Console.WriteLine("\nDestination Data:");
             foreach (var destination in destinationData)
