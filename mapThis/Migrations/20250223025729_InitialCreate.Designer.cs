@@ -10,7 +10,7 @@ using mapThis;
 namespace mapThis.Migrations
 {
     [DbContext(typeof(DestinationContext))]
-    [Migration("20250223024604_InitialCreate")]
+    [Migration("20250223025729_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -43,12 +43,12 @@ namespace mapThis.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("CategoryValue")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

@@ -29,9 +29,7 @@ public class DestinationContext : DbContext
 
     public static void SeedDatabase(DestinationContext context, IMapper mapper)
     {
-        // var destinationData = mapper.Map<List<Account>>(sourceData);
-
-        var sourceData = SourceClassTestData.GetTestData();
+d        var sourceData = SourceClassTestData.GetTestData();
         // var sourceData = GetTestData();
         // var mapperConfig = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         // var mapper = new Mapper(mapperConfig);
