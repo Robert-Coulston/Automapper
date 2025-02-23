@@ -15,7 +15,7 @@ public class MappingProfile : Profile
             .AfterMap((src, dest) =>
             {
                 dest.CategoryValues = src.GetCategoryValuesArray();
-                dest.AccountValues = src.GetCategoryValuesArray()
+                dest.AccountValues = src.GetCategoryValuesArray()?
                     .Select(value => new AccountValue { CategoryValue = value, AccountId = dest.Id, Account = dest })
                     .ToList();
             });

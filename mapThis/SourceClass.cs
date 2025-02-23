@@ -8,7 +8,7 @@ public class SourceClass
     public required string Name { get; set; }
     public string? CategoryValues { get; set; }
 
-    public string[] GetCategoryValuesArray()
+    public string[]? GetCategoryValuesArray()
     {
         if (string.IsNullOrEmpty(CategoryValues))
         {
@@ -16,7 +16,8 @@ public class SourceClass
         }
 
         var labelValuePairs = JsonConvert.DeserializeObject<List<LabelValuePair>>(CategoryValues);
-        return labelValuePairs?.Select(lvp => lvp.Value).ToArray() ?? Array.Empty<string>();
+        var guids = labelValuePairs?.Select(lvp => lvp.Value).ToArray();
+        return guids?.Select(guid => guid.ToString()).ToArray();
     }
 }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace mapThis
@@ -8,9 +9,9 @@ namespace mapThis
         {
             return new List<LabelValuePair>
             {
-                new() { Label = "Label1", Value = "Value1" },
-                new() { Label = "Label2", Value = "Value2" },
-                new() { Label = "Label3", Value = "Value3" }
+                new() { Label = "Label1", Value = Guid.NewGuid() },
+                new() { Label = "Label2", Value = Guid.NewGuid() },
+                new() { Label = "Label3", Value = Guid.NewGuid() }
             };
         }
     }
