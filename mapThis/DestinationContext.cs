@@ -47,11 +47,7 @@ public class DestinationContext : DbContext
                 {
                     var existingAccountValue = existingAccount.AccountValues?
                         .SingleOrDefault(av => av.AccountId == accountValue.AccountId && av.CategoryValue == accountValue.CategoryValue);
-                    if (existingAccountValue != null)
-                    {
-                        context.Entry(existingAccountValue).CurrentValues.SetValues(accountValue);
-                    }
-                    else
+                    if (existingAccountValue == null)
                     {
                         existingAccount.AccountValues?.Add(accountValue);
                     }
