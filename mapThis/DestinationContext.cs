@@ -27,7 +27,7 @@ public class DestinationContext : DbContext
         }
     }
 
-    public static void SeedDatabase(DestinationContext context, IMapper mapper)
+    public static void SetSeedDatabase(DestinationContext context, IMapper mapper)
     {
         var sourceData = SourceClassTestData.GetTestData();
         // var sourceData = GetTestData();
@@ -35,12 +35,43 @@ public class DestinationContext : DbContext
         // var mapper = new Mapper(mapperConfig);
         var destinationData = mapper.Map<List<Account>>(sourceData);
 
-        // Check if the destination data is already on the database
-        if (context.Accounts.Any())
+        foreach (var account in destinationData)
         {
-            return;
+            var existingAccount = context.Accounts.Include(a => a.AccountValues).SingleOrDefault(a => a.Id == account.Id);
+            if (existingAccount != null)
+            {
+                context.Entry(existingAccount).CurrentValues.SetValues(account);
+
+                // Update AccountValues
+                foreach (var accountValue in account.AccountValues ?? new List<AccountValue>())
+                {
+                    var existingAccountValue = existingAccount.AccountValues?
+                        .SingleOrDefault(av => av.AccountId == accountValue.AccountId && av.CategoryValue == accountValue.CategoryValue);
+                    if (existingAccountValue != null)
+                    {
+                        context.Entry(existingAccountValue).CurrentValues.SetValues(accountValue);
+                    }
+                    else
+                    {
+                        existingAccount.AccountValues?.Add(accountValue);
+                    }
+                }
+
+                // Remove AccountValues that are no longer present
+                foreach (var existingAccountValue in existingAccount.AccountValues?.ToList() ?? new List<AccountValue>())
+                {
+                    if (!(account.AccountValues?.Any(av => av.AccountId == existingAccountValue.AccountId && av.CategoryValue == existingAccountValue.CategoryValue) ?? false))
+                    {
+                        context.AccountValues.Remove(existingAccountValue);
+                    }
+                }
+            }
+            else
+            {
+                context.Accounts.Add(account);
+            }
         }
-        context.Accounts.AddRange(destinationData);
+
         context.SaveChanges();
     }
 }

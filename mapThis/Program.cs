@@ -22,7 +22,7 @@ namespace mapThis
             // create and seed the database
             // context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            DestinationContext.SeedDatabase(context, mapper);
+            DestinationContext.SetSeedDatabase(context, mapper);
 
             // query the database after seeding
             var destinationData = context.Accounts
